@@ -1,7 +1,8 @@
-#import os
-#from selenium import webdriver
-#from selenium.webdriver.common.keys import Keys
-#import time
+import os
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+import win32clipboard
 
 # https://www.youtube.com/watch?v=FFDDN1C1MEQ
 # download drivers from https://www.seleniumhq.org/download/
