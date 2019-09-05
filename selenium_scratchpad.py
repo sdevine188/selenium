@@ -9,13 +9,15 @@ import win32clipboard
 # https://selenium-python.readthedocs.io/index.html
 # http://allselenium.info/python-selenium-commands-cheat-sheet-frequently-used/
 #https://seleniumhq.github.io/selenium/docs/api/py/webdriver/selenium.webdriver.common.keys.html
+#https://stackoverflow.com/questions/10629815/how-to-switch-to-new-window-in-selenium-for-python
 
 
 # set wd
 #os.chdir("C:/Users/Stephen/Desktop/Python/selenium")
 
 # start driver
-driver = webdriver.Chrome("C:/Users/Stephen/Desktop/Python/selenium/selenium_drivers/chromedriver.exe")
+driver = webdriver.Chrome("C:/users/sjdevine/Work Folders/Desktop/chromedriver.exe")
+#driver = webdriver.Chrome("H:/Python/selenium/selenium_drivers/chromedriver.exe")
 
 # set page load timeout
 driver.set_page_load_timeout(10)
@@ -57,9 +59,20 @@ page_text = win32clipboard.GetClipboardData()
 win32clipboard.CloseClipboard()
 page_text[0:500]
 
+# Opens a new tab
+driver.execute_script("window.open()")
 
+# can view open tabs using window_handles
+print(driver.window_handles)
 
+# Switch to the newly opened tab and navigate to website
+driver.switch_to.window(driver.window_handles[1])
+driver.get("https://google.com")
 
+# switch back to original tab
+driver.switch_to.window(driver.window_handles[0])
+driver.get("https://imdb.com")
 
-
-
+# switch back to google tab and close it
+driver.switch_to.window(driver.window_handles[1])
+driver.close()
