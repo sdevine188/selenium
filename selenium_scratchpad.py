@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
@@ -13,10 +14,11 @@ import win32clipboard
 
 
 # set wd
-#os.chdir("C:/Users/Stephen/Desktop/Python/selenium")
+os.chdir("C:/Users/Stephen/Desktop/Python/selenium")
 
 # start driver
-driver = webdriver.Chrome("C:/users/sjdevine/Work Folders/Desktop/chromedriver.exe")
+driver = webdriver.Chrome("selenium_drivers/chromedriver.exe")
+#driver = webdriver.Chrome("C:/users/sjdevine/Work Folders/Desktop/chromedriver.exe")
 #driver = webdriver.Chrome("H:/Python/selenium/selenium_drivers/chromedriver.exe")
 
 # set page load timeout
@@ -34,20 +36,40 @@ time.sleep(1)
 # press button to execute search 
 driver.find_element_by_name("btnK").click()
 
+# export raw html in a df, which can then be loaded for further analysis in r
+raw_html = driver.page_source
+type(raw_html)
+raw_html
+raw_html_df = pd.DataFrame({"raw_html" : [raw_html]})
+raw_html_df.shape
+raw_html_df.head()
+raw_html_df.to_csv("example_raw_html_df.csv", index = False)
+
+
 # find element containing text 'financial times' (various options shown below)
+# note that the html layout may change over time
+
 #element_text = driver.find_element_by_class_name("ellip").text
 #element_text = driver.find_element_by_xpath("//h3/div[@class = 'ellip']").text
-element_text = driver.find_element_by_xpath("//h3/div[contains(text(), 'Financial Times')]").text
+element_text = driver.find_element_by_xpath("//h3[contains(text(), 'Financial Times')]").text
 print(element_text)
 
 # get url for financial times
-element = driver.find_element_by_xpath("//h3/div[contains(text(), 'Financial Times')]/../..")
+element = driver.find_element_by_xpath("//h3[contains(text(), 'Financial Times')]/..")
 print(element.get_attribute("href"))
 
 # get list of all urls
 list_of_urls = driver.find_elements_by_xpath("//h3/a[@href]")
+len(list_of_urls)
+type(list_of_urls)
 print(list_of_urls[1].text)
 print(list_of_urls[1].get_attribute("href"))
+
+# loop through list_of_urls getting urls
+for i in list(range(0, len(list_of_urls))):
+        current_text_df = pd.DataFrame({"text" : [list_of_urls[i].text],
+                                        "element_i" : [i]})
+        print(current_text_df)
 
 # copy all text on page
 driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL, "a")
